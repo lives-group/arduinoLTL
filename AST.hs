@@ -7,12 +7,13 @@ data Prog = Prog [Decl] [Func]
 data Vardec = Vardec String Type
 data Recdec = Recdec String [Vardec]
 data Func = Func Type String [Vardec] [Stmt]
-data Lit = LInt Int
-         | LFloat  Float
-         | LDouble  Double
-         | LChar   Char
-         | LString [Char]
-         | LBool Bool
+data Lit a where
+         LInt    :: Int    -> Lit Int
+         LFloat  :: Float  -> Lit Float
+         LDouble :: Double -> Lit Double
+         LChar   :: Char   -> Lit Char
+         LString :: String -> Lit String
+         LBool   :: Bool   -> Lit Bool
          deriving (Eq, Show)
 
 data Expr = L Lit
