@@ -7,25 +7,36 @@ data Prog = Prog [Decl] [Func]
 data Vardec = Vardec String Type
 data Recdec = Recdec String [Vardec]
 data Func = Func Type String [Vardec] [Stmt]
-data Lit a where
-         LInt    :: Int    -> Lit Int
-         LFloat  :: Float  -> Lit Float
-         LDouble :: Double -> Lit Double
-         LChar   :: Char   -> Lit Char
-         LString :: String -> Lit String
-         LBool   :: Bool   -> Lit Bool
-         deriving (Eq, Show)
 
-data Expr = L Lit
-          | Var String
-          | Plus Expr Expr
-          | Minus Expr Expr
-          | Times Expr Expr
-          | Divided Expr Expr
-          | Not Expr
-          | And Expr Expr
-          | Or Expr Expr
-          | Equal Expr Expr
+data Expr a where
+            LInt    :: Int    -> Expr Int
+            LFloat  :: Float  -> Expr Float
+            LDouble :: Double -> Expr Double
+            LChar   :: Char   -> Expr Char
+            LString :: String -> Expr String
+            LBool   :: Bool   -> Expr Bool
+            
+            --Var     :: String 
+            
+            Plus    :: Expr Int -> Expr Int -> Expr Int
+            Minus   :: Expr Int -> Expr Int -> Expr Int
+            Times   :: Expr Int -> Expr Int -> Expr Int
+            Divided :: Expr Int -> Expr Int -> Expr Int
+            
+            Plus    :: Expr Float -> Expr Float -> Expr Float
+            Minus   :: Expr Float -> Expr Float -> Expr Float
+            Times   :: Expr Float -> Expr Float -> Expr Float
+            Divided :: Expr Float -> Expr Float -> Expr Float
+            
+            Plus    :: Expr Double -> Expr Double -> Expr Double
+            Minus   :: Expr Double -> Expr Double -> Expr Double
+            Times   :: Expr Double -> Expr Double -> Expr Double
+            Divided :: Expr Double -> Expr Double -> Expr Double
+            
+            Not     :: Expr Bool -> Expr Bool
+            And     :: Expr Bool -> Expr Bool -> Expr Bool
+            Or      :: Expr Bool -> Expr Bool -> Expr Bool
+            Equal   :: Expr a ->  Expr a -> Expr a
           deriving (Eq, Show)
 
 data Stmt = Assign String Expr
