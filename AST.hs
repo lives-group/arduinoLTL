@@ -1,8 +1,11 @@
 {-# LANGUAGE GADTs #-}
+
 module AST where
 data Type = INT | CHAR | FLOAT | DOUBLE | POINTER Type | Rec String [Type] deriving (Eq,Show)
+
 data Decl = V Vardec
           | R Recdec
+
 data Prog = Prog [Decl] [Func]
 data Vardec = Vardec String Type
 data Recdec = Recdec String [Vardec]
