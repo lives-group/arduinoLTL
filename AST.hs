@@ -1,11 +1,8 @@
 {-# LANGUAGE GADTs #-}
-
 module AST where
 data Type = INT | CHAR | FLOAT | DOUBLE | POINTER Type | Rec String [Type] deriving (Eq,Show)
-
 data Decl = V Vardec
           | R Recdec
-
 data Prog = Prog [Decl] [Func]
 data Vardec = Vardec String Type
 data Recdec = Recdec String [Vardec]
@@ -25,7 +22,6 @@ data ValueString a where= LString String
 data ValueBool a where
             LBool :: Bool -> ValueBool Bool
 
-
 data Expr a where
             Plus    :: ValueNum a -> ValueNum a-> Expr a
             Minus   :: ValueNum a -> ValueNum a-> Expr a
@@ -37,7 +33,7 @@ data Expr a where
             Or      :: ValueBool b-> ValueBool b -> Expr b
             --Definir outros contrutores para Equal
             Equal   :: ValueBool b-> ValueBool b -> Expr b
-          deriving (Eq, Show)
+          deriving (Show)
 
 data Stmt = Assign String Expr
           | If Expr [Stmt] (Maybe [Stmt])
