@@ -8,35 +8,32 @@ data Vardec = Vardec String Type
 data Recdec = Recdec String [Vardec]
 data Func = Func Type String [Vardec] [Stmt]
 
+data ValueNum a where
+            LInt :: Int -> ValueNum Int
+            LFloat :: Float -> ValueNum Float
+            LDouble :: Double -> ValueNum Double
+
+data ValueChar a where =
+            LChar :: Char -> ValueChar Char
+
+data ValueString a where= LString String
+            String :: String -> ValueString String
+
+data ValueBool a where
+            LBool :: Bool -> ValueBool Bool
+
+
 data Expr a where
-            LInt    :: Int    -> Expr Int
-            LFloat  :: Float  -> Expr Float
-            LDouble :: Double -> Expr Double
-            LChar   :: Char   -> Expr Char
-            LString :: String -> Expr String
-            LBool   :: Bool   -> Expr Bool
-            
-            --Var     :: String 
-            
-            Plus    :: Expr Int -> Expr Int -> Expr Int
-            Minus   :: Expr Int -> Expr Int -> Expr Int
-            Times   :: Expr Int -> Expr Int -> Expr Int
-            Divided :: Expr Int -> Expr Int -> Expr Int
-            
-            Plus    :: Expr Float -> Expr Float -> Expr Float
-            Minus   :: Expr Float -> Expr Float -> Expr Float
-            Times   :: Expr Float -> Expr Float -> Expr Float
-            Divided :: Expr Float -> Expr Float -> Expr Float
-            
-            Plus    :: Expr Double -> Expr Double -> Expr Double
-            Minus   :: Expr Double -> Expr Double -> Expr Double
-            Times   :: Expr Double -> Expr Double -> Expr Double
-            Divided :: Expr Double -> Expr Double -> Expr Double
-            
-            Not     :: Expr Bool -> Expr Bool
-            And     :: Expr Bool -> Expr Bool -> Expr Bool
-            Or      :: Expr Bool -> Expr Bool -> Expr Bool
-            Equal   :: Expr a ->  Expr a -> Expr a
+            Plus    :: ValueNum a -> ValueNum a-> Expr a
+            Minus   :: ValueNum a -> ValueNum a-> Expr a
+            Times   :: ValueNum a-> ValueNum a-> Expr a
+            Divided :: ValueNum a-> ValueNum a-> Expr a
+
+            Not     :: ValueBool b -> Expr b
+            And     :: ValueBool b-> ValueBool b -> Expr b
+            Or      :: ValueBool b-> ValueBool b -> Expr b
+            --Definir outros contrutores para Equal
+            Equal   :: ValueBool b-> ValueBool b -> Expr b
           deriving (Eq, Show)
 
 data Stmt = Assign String Expr
