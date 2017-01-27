@@ -1,42 +1,38 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE ExistentialQuantification #-} -- Usando isso para corrigir erro em Show em Expr
 module AST where
 data Type = INT | CHAR | FLOAT | DOUBLE | POINTER Type | Rec String [Type] deriving (Eq,Show)
-data Decl = V Vardec
+data Decl = V Vardec   --One vou usar isso? Variaveis globais?
           | R Recdec
-data Prog = Prog [Decl] [Func]
+data (Prog a) = Prog [Decl] [(Func a)] -- Essa variavel fantasma vai ser oque neste ponto?
 data Vardec = Vardec String Type
 data Recdec = Recdec String [Vardec]
-data Func = Func Type String [Vardec] [Stmt]
+data Func a = Func Type String [Vardec] [(Stmt a)]
 
-data ValueNum a where
-            LInt :: Int -> ValueNum Int
-            LFloat :: Float -> ValueNum Float
-            LDouble :: Double -> ValueNum Double
-
-data ValueChar a where =
-            LChar :: Char -> ValueChar Char
-
-data ValueString a where= LString String
-            String :: String -> ValueString String
-
-data ValueBool a where
-            LBool :: Bool -> ValueBool Bool
 
 data Expr a where
-            Plus    :: ValueNum a -> ValueNum a-> Expr a
-            Minus   :: ValueNum a -> ValueNum a-> Expr a
-            Times   :: ValueNum a-> ValueNum a-> Expr a
-            Divided :: ValueNum a-> ValueNum a-> Expr a
 
-            Not     :: ValueBool b -> Expr b
-            And     :: ValueBool b-> ValueBool b -> Expr b
-            Or      :: ValueBool b-> ValueBool b -> Expr b
-            --Definir outros contrutores para Equal
-            Equal   :: ValueBool b-> ValueBool b -> Expr b
-          deriving (Show)
+            LInt    :: Int -> Expr Int
+            LFloat  :: Float -> Expr Float
+            LDouble :: Double -> Expr Double
+            LChar   :: Char -> Expr Char
+            LBool   :: Bool -> Expr Bool
 
-data Stmt = Assign String Expr
-          | If Expr [Stmt] (Maybe [Stmt])
-          | While Expr [Stmt]
-          | For Stmt Expr Stmt [Stmt]
-          | Declare String Expr
+            Plus    :: (Num a, Show a) => Expr a -> Expr a -> Expr a
+            Minus   :: (Num a, Show a) => Expr a -> Expr a -> Expr a
+            Times   :: (Num a, Show a) => Expr a -> Expr a -> Expr a
+            Divided :: (Num a, Show a) => Expr a -> Expr a -> Expr a
+
+            Not     :: Expr Bool -> Expr Bool
+            And     :: Expr Bool -> Expr Bool -> Expr Bool
+            Or      :: Expr Bool -> Expr Bool -> Expr Bool
+
+            --Equal vai ser para qualquer tipo?
+            Equal   ::Show a => Expr a-> Expr a -> Expr Bool
+          deriving (Show) -- Apenas Show?
+
+data Stmt a = Assign String (Expr a)  -- Variavel Fantasma aqui?
+          | If (Expr Bool) [(Stmt a)] (Maybe [(Stmt a)])
+          | While (Expr Bool) [(Stmt a)]
+          | For (Stmt a) (Expr a) (Stmt a) [(Stmt a)] --Qual os tipos aqui?
+          | Declare String (Expr a) -- Isso é Realmente necessario?
